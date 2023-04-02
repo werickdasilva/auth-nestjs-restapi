@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/databases/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -21,11 +22,10 @@ export class UserService {
     }
   }
 
-  async create(createUserDto: CreateUserDto) {
-    const saltOrRounds = 10;
-
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     await this.isNewEmail(createUserDto.email);
 
+    const saltOrRounds = 10;
     const passwordHash = await bcrypt.hash(
       createUserDto.password,
       saltOrRounds,
